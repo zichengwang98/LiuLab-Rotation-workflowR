@@ -1,5 +1,5 @@
 ---
-title: "**Research Progress Template (Liu Lab)**"
+title: "**Zicheng Wang's Research Website at Liu Lab**"
 site: workflowr::wflow_site
 output:
   workflowr::wflow_html:
@@ -15,7 +15,7 @@ editor_options:
 
 ## Welcome
 
-Welcome to Zicheng Wang's research website.
+Welcome to Zicheng Wang's research website at Xuanyao Liu's Lab.
 
 
 ## Topics
