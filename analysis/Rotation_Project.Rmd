@@ -1,0 +1,123 @@
+---
+title: ''
+output:
+  workflowr::wflow_html:
+              toc: true
+              toc_depth: 4
+editor_options:
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE)
+```
+
+```{css style settings, echo = FALSE}
+blockquote {
+    padding: 10px 20px;
+    margin: 0 0 20px;
+    font-size: 14px;
+    border-left: 5px solid #eee;
+}
+```
+
+## April 13 Meeting
+
+Data cleaning, univariate QTL mapping (QTLtools), and Snakemake pipeline setup.
+
+### 0. Literature Reivew
+
+
+<center>
+![](assets/2023_04_13/crd_tad.png){width="50%"}
+
+
+![](assets/2023_04_13/crd_tad_distance.png){width="50%"}
+</center>
+
+- Chromatin three-dimensional interactions mediate genetic effects on gene expression (Delaneau et al, 2019)
+  - Genetic variants perturb gene regulations through cis- and trans-regulatory domains, that highly reflect the local and global structure.
+  - eQTL can perturb binding interactions, which result variable activity of regulatory elements. 
+
+
+<center>
+
+![](assets/2023_04_13/rao_abstract.png){width="50%"}
+</center>
+
+- Loop domains and TADs are anchored by cohesin and CTCF, after removing the anchors TADs disappear. Superenhancer influenced compartment interactions. (Rao et al., 2017)
+
+
+
+### 1. Overall Progress
+
+1. Single-cell QTL analysis (200K+ cells) is computationally challenging, which requires more time. Pseudo-bulk data was obtained obtained from Phoenix, containing 280K ATAC-Seq peaks from whole blood, L1 cells (7 cell types), and L2 cells (13 cell types). All data was cleaned.
+
+2. Snakemake pipline was setted up. Contains 1) univariate QTL mapping (QTLtools), 2) Grouping peaks by windows, 3) Calculation of covariate residuals, and 4) PCO.
+
+3. EDA of ATAC-Seq data was completed. Results suggest that the reads follow negative binomial distribution. Normal approximation performed okay. Personally I recommend to apply inverse normal transformation to the phenotype. 
+
+### 2. Exploratory Data Analysis (EDA)
+
+- Sampled 10000 ATAC-Seq peaks from whole blood sample.
+
+
+<center>
+![](assets/2023_04_13/hist_atacseq_reads.png){width="50%"}
+</center>
+
+
+- Histogram shows that the reads follow  of poisson/negative binomial distribution.
+
+
+<center>
+![](assets/2023_04_13/mean_vs_var.png){width="50%"}
+</center>
+
+
+- Exhibited underdispersion  if we assume the counts follows poission distribution. Negative Binomial may work better.
+
+- Evaluated the model fitness of Gaussian, Poisson, and Negative Binomial regression models.
+
+
+<center>
+![](assets/2023_04_13/aic_boxplot.png){width="50%"}
+</center>
+
+
+- Negative binomial model performed the best. Gaussian approximation is acceptable. Poisson model performed worst.
+
+- QTLtools only supports Gaussian model. It's better to perform inverse normal transformation before univariate QTL mapping. 
+
+
+
+
+### 3. Questions
+
+1. We can potentially use CRD and TAD boundaries to define the window.
+
+2. Expand the window size to 1Mb?
+
+3. Cis regulation distance for univariate QTL mapping?
+
+
+<center>
+
+![](assets/2023_04_13/atac_center.png){width="50%"}
+</center>
+
+4. Window centered by peaks?
+
+4. Combine chromatin compartment signals in TRHs? Compartment is not conserved across cell/tissue types. 
+
+
+### 4. References
+
+- Delaneau, O., Zazhytska, M., Borel, C., Giannuzzi, G., Rey, G., Howald, C., ... & Dermitzakis, E. T. (2019). Chromatin three-dimensional interactions mediate genetic effects on gene expression. Science, 364(6439)
+
+
+- Rao, S. S., Huang, S. C., St Hilaire, B. G., Engreitz, J. M., Perez, E. M., Kieffer-Kwon, K. R., ... & Aiden, E. L. (2017). Cohesin loss eliminates all loop domains. Cell, 171(2), 305-320.
+
+- McArthur, E., & Capra, J. A. (2021). Topologically associating domain boundaries that are stable across diverse cell types are evolutionarily constrained and enriched for heritability. The American Journal of Human Genetics, 108(2), 269-283.
+
+
