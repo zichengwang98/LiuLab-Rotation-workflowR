@@ -20,4 +20,4 @@ Welcome to Zicheng Wang's research website at Xuanyao Liu's Lab.
 
 ## Topics
 
-- Progress in 2022. [click](2022.html)
+- Spring Rotation Progress. [click](Rotation_Project.html)
